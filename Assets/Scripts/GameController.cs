@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -36,7 +37,11 @@ public class GameController : MonoBehaviour
 
     [Header("Tip buttons")]
     [SerializeField]
-    private Button[] _tipButtons;
+    private Button _tip50;
+    [SerializeField]
+    private Button _tipCall;
+    [SerializeField]
+    private Button _tipPeople;
 
     [Header("Questions")]
     [SerializeField]
@@ -46,15 +51,56 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private byte _currentIndex = 0;
 
-
     private void Start()
     {
+        InitListeners();
         SetQuestion();
+    }
+
+    private int GetRandomInt(int left, int right)
+    {
+        var rand = new System.Random();
+        var result = rand.Next(left, right);
+        return result;
+    }
+
+    private void InitListeners()
+    {
+
         for (byte i = 0; i < _actionButtons.Length; i++)
         {
             var copyI = i;
             _actionButtons[i].onClick.AddListener(() => OnActionClick(copyI));
         }
+
+        _tip50.onClick.AddListener(() =>
+        {
+            var tempList = new List<Button> { _actionButtons[0], _actionButtons[1], _actionButtons[2], _actionButtons[3] };
+
+            var currentQuestionAnswer = _qustions[_currentIndex].CorrectIndex;
+            tempList.Remove(tempList[currentQuestionAnswer]);
+            tempList.Remove(tempList[GetRandomInt(0, tempList.Count - 1)]);
+
+            for (byte i = 0; i < tempList.Count; i++)
+            {
+                tempList[i].gameObject.SetActive(false);
+            }
+
+            _tip50.enabled = false;
+        });
+
+        _tipCall.onClick.AddListener(() =>
+        {
+            byte intel = 20;
+
+            var randNumber = GetRandomInt(1, 100) < intel ? _qustions[_currentIndex].CorrectIndex + 1 : GetRandomInt(1, 4);
+
+            _questionText.text = $"Думаю это {randNumber}";
+
+            _tipCall.enabled = false;
+        });
+        _tipPeople.onClick.AddListener(() => { });
+
     }
 
     private void EndGame()
@@ -65,15 +111,15 @@ public class GameController : MonoBehaviour
         {
             _actionButtons[i].gameObject.SetActive(false);
         }
-        for (byte i = 0; i < _tipButtons.Length; i++)
-        {
-            _tipButtons[i].gameObject.SetActive(false);
-        }
 
-        _tipButtons[1].gameObject.SetActive(true);
-        _tipButtons[1].GetComponentInChildren<TMP_Text>().text = "Начать заново";
-        _tipButtons[1].onClick.RemoveAllListeners();
-        _tipButtons[1].onClick.AddListener(() => SceneManager.LoadScene(SceneManager.GetActiveScene().name));
+        _tip50.gameObject.SetActive(false);
+        _tipPeople.gameObject.SetActive(false);
+
+
+        _tipCall.gameObject.SetActive(true);
+        _tipCall.GetComponentInChildren<TMP_Text>().text = "Начать заново";
+        _tipCall.onClick.RemoveAllListeners();
+        _tipCall.onClick.AddListener(() => SceneManager.LoadScene(SceneManager.GetActiveScene().name));
     }
 
     private void OnActionClick(byte index)
@@ -93,6 +139,11 @@ public class GameController : MonoBehaviour
 
     private void SetQuestion()
     {
+        for (byte i = 0; i < _actionButtons.Length; i++)
+        {
+            _actionButtons[i].gameObject.SetActive(true);
+        }
+
         var currentQuestion = _qustions[_currentIndex];
 
         _questionText.text = currentQuestion.QuestionText;

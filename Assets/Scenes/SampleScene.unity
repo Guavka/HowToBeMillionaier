@@ -2235,14 +2235,9 @@ MonoBehaviour:
   - {fileID: 691554031}
   - {fileID: 2018687809}
   - {fileID: 1325274003}
-  _tipButtons:
-  - {fileID: 456508518}
-  - {fileID: 963262221}
-  - {fileID: 1743149519}
-  _tipText:
-  - {fileID: 651584599}
-  - {fileID: 1313175945}
-  - {fileID: 622587817}
+  _tip50: {fileID: 456508518}
+  _tipCall: {fileID: 963262221}
+  _tipPeople: {fileID: 1743149519}
   _qustions:
   - QuestionText: "\u041A\u0442\u043E \u0436\u0438\u0432\u0435\u0442 \u043D\u0430
       \u0434\u043D\u0435 \u043E\u043A\u0435\u0430\u043D\u0430?"
